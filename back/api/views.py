@@ -96,6 +96,32 @@ class UcesnikViewSet(viewsets.ModelViewSet):
     queryset = Ucesnik.objects.all()
     serializer_class = UcesnikSerializer
     permission_classes = [AllowAny]
+    
+    def update(self, request, pk=None):
+        """Custom update method to handle OneToOneField with primary key."""
+        try:
+            korisnik = Korisnik.objects.get(pk=pk)
+            
+            # Try to get existing ucesnik or create new one
+            ucesnik, created = Ucesnik.objects.get_or_create(
+                idk=korisnik,
+                defaults=request.data
+            )
+            
+            if not created:
+                # Update existing ucesnik
+                for key, value in request.data.items():
+                    setattr(ucesnik, key, value)
+                ucesnik.save()
+            
+            serializer = self.get_serializer(ucesnik)
+            return Response(serializer.data)
+            
+        except Korisnik.DoesNotExist:
+            return Response(
+                {'error': 'Korisnik nije pronađen'}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
 
 
 class SudijaViewSet(viewsets.ModelViewSet):
@@ -124,6 +150,29 @@ class ZiriViewSet(viewsets.ModelViewSet):
     queryset = Ziri.objects.all()
     serializer_class = ZiriSerializer
     permission_classes = [AllowAny]
+    
+    @action(detail=True, methods=['get'])
+    def sastav(self, request, pk=None):
+        """Get jury composition (members)."""
+        try:
+            ziri = self.get_object()
+            sastav = SastojSe.objects.filter(ziri=ziri)
+            serializer = SastojSeSerializer(sastav, many=True)
+            return Response(serializer.data)
+        except Exception as e:
+            return Response({'detail': str(e)}, 
+                          status=status.HTTP_404_NOT_FOUND)
+    
+    @action(detail=True, methods=['delete'])
+    def sudije(self, request, pk=None):
+        """Remove all judges from jury."""
+        try:
+            ziri = self.get_object()
+            SastojSe.objects.filter(ziri=ziri).delete()
+            return Response({'detail': 'Judges removed successfully'})
+        except Exception as e:
+            return Response({'detail': str(e)}, 
+                          status=status.HTTP_400_BAD_REQUEST)
 
 
 class IzdanjeViewSet(viewsets.ModelViewSet):
@@ -166,6 +215,30 @@ class IzvoriViewSet(viewsets.ModelViewSet):
     queryset = Izvodi.objects.all()
     serializer_class = IzvoriSerializer
     permission_classes = [AllowAny]
+    
+    def destroy(self, request, pk=None):
+        """Custom delete method for compound key lookup via query params."""
+        from rest_framework.response import Response
+        from rest_framework import status
+        
+        # Try delete by query parameters if pk doesn't work
+        ucesnik_id = request.query_params.get('ucesnik')
+        pesma_id = request.query_params.get('pesma')
+        
+        if ucesnik_id and pesma_id:
+            try:
+                from .models import Izvodi
+                izvodi = Izvodi.objects.get(ucesnik=ucesnik_id, pesma=pesma_id)
+                izvodi.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
+            except Izvodi.DoesNotExist:
+                return Response(
+                    {'error': 'Izvedba nije pronađena'}, 
+                    status=status.HTTP_404_NOT_FOUND
+                )
+        
+        # Fallback to default behavior
+        return super().destroy(request, pk)
 
 
 class NastupViewSet(viewsets.ModelViewSet):

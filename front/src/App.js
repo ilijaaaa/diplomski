@@ -6,6 +6,17 @@ import RegisterSudija from './pages/RegisterSudija';
 import RegisterOrganizator from './pages/RegisterOrganizator';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import TakmicenjaManagement from './pages/TakmicenjaManagement';
+import IzdanjaManagement from './pages/IzdanjaManagement';
+import TakmicarkiKrugManagement from './pages/TakmicarkiKrugManagement';
+import DvoraneManagement from './pages/DvoraneManagement';
+import DrzaveManagement from './pages/DrzaveManagement';
+import UcesniciManagement from './pages/UcesniciManagement';
+import PesmeManagement from './pages/PesmeManagement';
+import SudijeManagement from './pages/SudijeManagement';
+import ZirijiManagement from './pages/ZirijiManagement';
+import NagradeManagement from './pages/NagradeManagement';
+import DodeljivanjeNagradaManagement from './pages/DodeljivanjeNagradaManagement';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 
@@ -63,6 +74,105 @@ function App() {
           element={
             <PrivateRoute user={user}>
               <Profile user={user} setUser={setUser} />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/takmicenja"
+          element={
+            <PrivateRoute user={user}>
+              <TakmicenjaManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/izdanja"
+          element={
+            <PrivateRoute user={user}>
+              <IzdanjaManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/krugovi"
+          element={
+            <PrivateRoute user={user}>
+              <TakmicarkiKrugManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/dvorane"
+          element={
+            <PrivateRoute user={user}>
+              <DvoraneManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/drzave"
+          element={
+            <PrivateRoute user={user}>
+              <DrzaveManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/ucesnici"
+          element={
+            <PrivateRoute user={user}>
+              <UcesniciManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/pesme"
+          element={
+            <PrivateRoute user={user}>
+              <PesmeManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/sudije"
+          element={
+            <PrivateRoute user={user}>
+              <SudijeManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/ziriji"
+          element={
+            <PrivateRoute user={user}>
+              <ZirijiManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/nagrade"
+          element={
+            <PrivateRoute user={user}>
+              <NagradeManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/organizator/dodeljivanje-nagrada"
+          element={
+            <PrivateRoute user={user}>
+              <DodeljivanjeNagradaManagement />
             </PrivateRoute>
           }
         />

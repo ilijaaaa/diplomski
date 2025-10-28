@@ -1,6 +1,21 @@
 import React from 'react';
+import OrganizatorDashboard from './OrganizatorDashboard';
 
 const Dashboard = ({ user }) => {
+  // Ako se user još uvek učitava, prikaži loading
+  if (!user) {
+    return (
+      <main className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500 mx-auto mb-4"></div>
+            <p className="text-gray-600">Učitavam...</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
   const renderDashboard = () => {
     switch (user?.tipk) {
       case 'SUDIJA':
@@ -47,59 +62,7 @@ const Dashboard = ({ user }) => {
         );
 
       case 'ORGANIZATOR':
-        return (
-          <div className="space-y-6">
-            <div className="bg-gradient-to-r from-green-400 to-green-600 rounded-lg shadow-lg p-8 text-white">
-              <h2 className="text-3xl font-bold mb-2">🎪 Dobrodošli, Organizatore!</h2>
-              <p className="text-lg opacity-90">
-                {user.imek} {user.przk}
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">👥 Učesnici</h3>
-                <p className="text-4xl font-bold text-green-500 mb-2">0</p>
-                <p className="text-gray-600">Ukupno registrovanih</p>
-              </div>
-
-              <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">🎵 Takmičenja</h3>
-                <p className="text-4xl font-bold text-green-500 mb-2">1</p>
-                <p className="text-gray-600">Aktivnih takmičenja</p>
-              </div>
-
-              <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500 hover:shadow-xl transition">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">🎤 Grupe</h3>
-                <p className="text-4xl font-bold text-green-500 mb-2">0</p>
-                <p className="text-gray-600">Kreirane grupe</p>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">⚙️ Glavne akcije</h3>
-                <div className="space-y-2">
-                  <button className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-lg transition">
-                    ➕ Dodaj učesnika
-                  </button>
-                  <button className="w-full bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded-lg transition">
-                    ➕ Kreiraj grupu
-                  </button>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-green-500">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">📋 Preporuke</h3>
-                <ul className="space-y-2 text-gray-600">
-                  <li>✓ Prvo kreiraj grupe</li>
-                  <li>✓ Zatim dodaj učesnike</li>
-                  <li>✓ Prati njihove nastupe</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        );
+        return <OrganizatorDashboard user={user} />;
 
       case 'UCESNIK':
         return (
