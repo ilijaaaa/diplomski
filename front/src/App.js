@@ -17,6 +17,12 @@ import SudijeManagement from './pages/SudijeManagement';
 import ZirijiManagement from './pages/ZirijiManagement';
 import NagradeManagement from './pages/NagradeManagement';
 import DodeljivanjeNagradaManagement from './pages/DodeljivanjeNagradaManagement';
+import SudijaDashboard from './pages/SudijaDashboard';
+import SudijaVoting from './pages/SudijaVoting';
+import SudijaParticipants from './pages/SudijaParticipants';
+import SudijaAwards from './pages/SudijaAwards';
+import UcesnikStatus from './pages/UcesnikStatus';
+import AutoGenerateSchedule from './pages/AutoGenerateSchedule';
 import PrivateRoute from './components/PrivateRoute';
 import Navbar from './components/Navbar';
 
@@ -173,6 +179,63 @@ function App() {
           element={
             <PrivateRoute user={user}>
               <DodeljivanjeNagradaManagement />
+            </PrivateRoute>
+          }
+        />
+        
+        {/* Sudija Routes */}
+        <Route
+          path="/sudija-dashboard"
+          element={
+            <PrivateRoute user={user}>
+              <SudijaDashboard />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/sudija-voting"
+          element={
+            <PrivateRoute user={user}>
+              <SudijaVoting />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/sudija-participants"
+          element={
+            <PrivateRoute user={user}>
+              <SudijaParticipants />
+            </PrivateRoute>
+          }
+        />
+        
+        <Route
+          path="/sudija-awards"
+          element={
+            <PrivateRoute user={user}>
+              <SudijaAwards />
+            </PrivateRoute>
+          }
+        />
+        
+        {/* Ucesnik Routes */}
+        <Route
+          path="/ucesnik-status"
+          element={
+            <PrivateRoute user={user}>
+              <UcesnikStatus />
+            </PrivateRoute>
+          }
+        />
+        
+        {/* Auto Generate Schedule */}
+        <Route
+          path="/auto-generate-schedule"
+          element={
+            <PrivateRoute user={user}>
+              <AutoGenerateSchedule />
             </PrivateRoute>
           }
         />

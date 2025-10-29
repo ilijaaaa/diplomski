@@ -267,9 +267,6 @@ const IzdanjaManagement = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Takmičenje
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -289,9 +286,6 @@ const IzdanjaManagement = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {izdanja.map((item) => (
                     <tr key={item.idizd} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm font-medium text-gray-900">{item.idizd}</div>
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{getTakmicenjeNaziv(item.muzicko_takmicenje)}</div>
                       </td>

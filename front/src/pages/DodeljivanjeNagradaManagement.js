@@ -10,7 +10,6 @@ const DodeljivanjeNagradaManagement = () => {
   const [sudije, setSudije] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [selectedFilter, setSelectedFilter] = useState('all');
 
   useEffect(() => {
     fetchData();
@@ -54,13 +53,17 @@ const DodeljivanjeNagradaManagement = () => {
     return ucesnik ? `${ucesnik.ime} ${ucesnik.prezime}` : 'Nepoznat učesnik';
   };
 
-  const getSudijaInfo = (sudijaId) => {
-    const sudija = sudije.find(s => s.idkor === sudijaId);
-    return sudija ? sudija.nazivkor : 'Nepoznat sudija';
+  const getSudijaInfo = (dodeljivanje) => {
+    // Use sudija_info from backend serializer
+    if (dodeljivanje.sudija_info && dodeljivanje.sudija_info.korisnik_info) {
+      const korisnikInfo = dodeljivanje.sudija_info.korisnik_info;
+      return `${korisnikInfo.imek} ${korisnikInfo.przk}`;
+    }
+    return `Sudija ${dodeljivanje.sudija}`;
   };
 
   const getNastupInfo = (nastupId) => {
-    const nastup = nastupe.find(n => n.idnas === nastupId);
+    const nastup = nastupe.find(n => n.idn === nastupId);
     if (!nastup) return 'Nepoznat nastup';
     
     return `${getUcesnikInfo(nastup.iduc)} - RB ${nastup.rbrnas}`;
@@ -74,13 +77,7 @@ const DodeljivanjeNagradaManagement = () => {
     return nagrade.filter(n => n.dodeljivanje_nagrade === dodeljivanjeId);
   };
 
-  const getFilteredDodeljivanja = () => {
-    if (selectedFilter === 'all') return dodeljivanja;
-    if (selectedFilter === 'with-awards') {
-      return dodeljivanja.filter(d => getAssignedNastupe(d.iddg).length > 0);
-    }
-    return dodeljivanja;
-  };
+  // Filter function removed - showing all dodeljivanja
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Nije definisano';
@@ -123,26 +120,13 @@ const DodeljivanjeNagradaManagement = () => {
           </div>
         )}
 
-        {/* Filter */}
-        <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
-          <div className="flex items-center space-x-4">
-            <label className="text-gray-700 font-semibold">Filter:</label>
-            <select
-              value={selectedFilter}
-              onChange={(e) => setSelectedFilter(e.target.value)}
-              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="all">Sva dodeljivanja</option>
-              <option value="with-awards">Samo dodeljena</option>
-            </select>
-          </div>
-        </div>
+        {/* Filter - REMOVED */}
 
         {/* Main Content */}
         <div className="bg-white rounded-lg shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-4">Lista dodeljivanja nagrada</h2>
           
-          {getFilteredDodeljivanja().length === 0 ? (
+          {dodeljivanja.length === 0 ? (
             <div className="text-center py-8">
               <p className="text-gray-500 text-lg">Nema pronađenih dodeljivanja nagrada.</p>
             </div>
@@ -151,9 +135,6 @@ const DodeljivanjeNagradaManagement = () => {
               <table className="min-w-full table-auto border-collapse">
                 <thead>
                   <tr className="bg-gray-50">
-                    <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700">
-                      ID
-                    </th>
                     <th className="border border-gray-300 px-4 py-3 text-left text-sm font-semibold text-gray-700">
                       Datum dodeljivanja
                     </th>
@@ -169,38 +150,30 @@ const DodeljivanjeNagradaManagement = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {getFilteredDodeljivanja().map((item) => (
+                  {dodeljivanja.map((item) => (
                     <tr key={item.iddg} className="hover:bg-gray-50">
-                      <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
-                        {item.iddg}
-                      </td>
+
                       <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
                         {formatDate(item.datdodele)}
                       </td>
                       <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
-                        {getSudijaInfo(item.sudija)}
+                        {getSudijaInfo(item)}
                       </td>
                       <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
-                        {getAssignedNagrade(item.iddg).length > 0 ? (
-                          <div className="space-y-1">
-                            {getAssignedNagrade(item.iddg).map((nagrada) => (
-                              <div key={nagrada.idnag} className="bg-yellow-50 rounded px-2 py-1 text-xs">
-                                {nagrada.naznag}
-                              </div>
-                            ))}
+                        {item.nagrada_info ? (
+                          <div className="bg-yellow-50 rounded px-2 py-1 text-xs">
+                            {item.nagrada_info.naznag}
                           </div>
                         ) : (
                           <span className="text-gray-500 italic">Nema dodeljenih nagrada</span>
                         )}
                       </td>
                       <td className="border border-gray-300 px-4 py-3 text-sm text-gray-900">
-                        {getAssignedNastupe(item.iddg).length > 0 ? (
-                          <div className="space-y-1">
-                            {getAssignedNastupe(item.iddg).map((nastup) => (
-                              <div key={nastup.idnas} className="bg-blue-50 rounded px-2 py-1 text-xs">
-                                {getNastupInfo(nastup.idnas)}
-                              </div>
-                            ))}
+                        {item.nastup_info ? (
+                          <div className="bg-blue-50 rounded px-2 py-1 text-xs">
+                            <div><strong>Pesma:</strong> {item.nastup_info.pesma_naziv || 'N/A'}</div>
+                            <div><strong>Država:</strong> {item.nastup_info.drzava_naziv || 'N/A'}</div>
+                            <div><strong>Bodovi:</strong> {item.nastup_info.ukbod || 0}</div>
                           </div>
                         ) : (
                           <span className="text-gray-500 italic">Nema dodeljenih nastupa</span>
@@ -214,34 +187,7 @@ const DodeljivanjeNagradaManagement = () => {
           )}
         </div>
 
-        {/* Summary Info */}
-        <div className="mt-6 bg-white rounded-lg shadow-lg p-6">
-          <h3 className="text-lg font-semibold mb-4">Sažetak</h3>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-blue-50 rounded-lg p-4">
-              <h4 className="font-semibold text-blue-800">Ukupno dodeljivanja</h4>
-              <p className="text-2xl font-bold text-blue-600">{dodeljivanja.length}</p>
-            </div>
-            <div className="bg-yellow-50 rounded-lg p-4">
-              <h4 className="font-semibold text-yellow-800">Sa dodeljenim nagradama</h4>
-              <p className="text-2xl font-bold text-yellow-600">
-                {dodeljivanja.filter(d => getAssignedNagrade(d.iddg).length > 0).length}
-              </p>
-            </div>
-            <div className="bg-green-50 rounded-lg p-4">
-              <h4 className="font-semibold text-green-800">Sa dodeljenim nastupima</h4>
-              <p className="text-2xl font-bold text-green-600">
-                {dodeljivanja.filter(d => getAssignedNastupe(d.iddg).length > 0).length}
-              </p>
-            </div>
-            <div className="bg-red-50 rounded-lg p-4">
-              <h4 className="font-semibold text-red-800">Bez dodela</h4>
-              <p className="text-2xl font-bold text-red-600">
-                {dodeljivanja.filter(d => getAssignedNagrade(d.iddg).length === 0 && getAssignedNastupe(d.iddg).length === 0).length}
-              </p>
-            </div>
-          </div>
-        </div>
+        {/* Summary Info - REMOVED */}
       </div>
     </div>
   );

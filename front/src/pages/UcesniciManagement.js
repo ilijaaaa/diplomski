@@ -200,16 +200,17 @@ const UcesniciManagement = () => {
           entityId = grupaRes.data.idg;
         }
         
-        // 3. Create Ucesnik - use PUT with korisnik ID since idk is primary key OneToOneField
+        // 3. Create Ucesnik - use POST with korisnik ID in data
         const ucesnikData = {
+          idk: korisnikId,
           tipu: registrationData.tipu,
           solo: registrationData.tipu === 'SOLO' ? entityId : null,
           duo: registrationData.tipu === 'DUO' ? entityId : null,
           grupa: registrationData.tipu === 'GRUPA' ? entityId : null
         };
         
-        // Use PUT with the korisnik ID as the URL parameter since idk is primary key
-        const ucesnikRes = await api.put(`/ucesnici/${korisnikId}/`, ucesnikData);
+        // Use POST with the korisnik ID in the data
+        const ucesnikRes = await api.post('/ucesnici/', ucesnikData);
         ucesnikId = ucesnikRes.data.idk;
         
         // Refresh ucesnici list
@@ -920,9 +921,6 @@ const UcesniciManagement = () => {
                       Korisnik
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Država
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Tip
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -938,9 +936,6 @@ const UcesniciManagement = () => {
                     <tr key={item.idk} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">{getKorisnikNaziv(item.idk)}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">{getDrzavaNaziv(item.idk)}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${

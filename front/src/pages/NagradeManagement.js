@@ -223,9 +223,6 @@ const NagradeManagement = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      ID
-                    </th>
-                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                       Naziv nagrade
                     </th>
                     <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -239,9 +236,6 @@ const NagradeManagement = () => {
                 <tbody className="bg-white divide-y divide-gray-200">
                   {nagrade.map((nagrada) => (
                     <tr key={nagrada.idnag} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                        {nagrada.idnag}
-                      </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {nagrada.naznag}
                       </td>

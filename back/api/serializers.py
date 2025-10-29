@@ -179,11 +179,45 @@ class OcenjuyeSerializer(serializers.ModelSerializer):
 
 class DodeljujanjeNagradeSerializer(serializers.ModelSerializer):
     sudija_info = SudijaSerializer(source='sudija', read_only=True)
+    nagrada_info = serializers.SerializerMethodField()
+    nastup_info = serializers.SerializerMethodField()
     
     class Meta:
         model = DodeljujanjeNagrade
-        fields = ('iddg', 'datdodele', 'sudija', 'sudija_info')
+        fields = ('iddg', 'datdodele', 'sudija', 'sudija_info', 'nagrada_info', 'nastup_info')
         read_only_fields = ('iddg',)
+
+    def get_nagrada_info(self, obj):
+        """Get award information from related Nagrada objects."""
+        try:
+            # Find Nagrada objects that reference this DodeljujanjeNagrade
+            from .models import Nagrada
+            nagrada = Nagrada.objects.filter(dodeljivanje_nagrade=obj).first()
+            if nagrada:
+                return {
+                    'idnag': nagrada.idnag,
+                    'naznag': nagrada.naznag
+                }
+        except:
+            pass
+        return None
+
+    def get_nastup_info(self, obj):
+        """Get performance information."""
+        try:
+            # Find Nastup objects that reference this DodeljujanjeNagrade
+            from .models import Nastup
+            nastup = Nastup.objects.filter(dodeljivanje_nagrade=obj).first()
+            if nastup:
+                return {
+                    'idn': nastup.idn,
+                    'ukbod': nastup.ukbod,
+                    'pesma_naziv': nastup.pesma.nazp if nastup.pesma else None,
+                    'drzava_naziv': nastup.drzava.nazdr if nastup.drzava else None,
+                }
+        except:
+            pass
+        return None
 
 
 class NagradeSerializer(serializers.ModelSerializer):
@@ -213,6 +247,14 @@ class NastupSerializer(serializers.ModelSerializer):
                   'takmickarski_krug', 'dodeljivanje_nagrade', 'drzava_info', 
                   'pesma_info', 'takmickarski_krug_info', 'ocene')
         read_only_fields = ('idn',)
+
+    def to_representation(self, instance):
+        """Ensure ukbod is updated with latest scores."""
+        data = super().to_representation(instance)
+        # Calculate and update total score
+        total_score = instance.calculate_total_score()
+        data['ukbod'] = total_score
+        return data
 
 
 # Bridge Serializers

@@ -148,8 +148,9 @@ class KorisnikDetailSerializer(serializers.ModelSerializer):
             try:
                 ucesnik = Ucesnik.objects.get(idk=obj)
                 return {
+                    'idk': ucesnik.idk.idk,  # Primary key of ucesnik
                     'tip': ucesnik.tipu,
-                    'solo': ucesnik.solo.idk if ucesnik.solo else None,
+                    'solo': ucesnik.solo.ids if ucesnik.solo else None,
                     'duo': ucesnik.duo.idduo if ucesnik.duo else None,
                     'grupa': ucesnik.grupa.idg if ucesnik.grupa else None,
                 }

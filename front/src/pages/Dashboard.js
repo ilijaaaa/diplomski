@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import OrganizatorDashboard from './OrganizatorDashboard';
 
 const Dashboard = ({ user }) => {
@@ -48,14 +49,18 @@ const Dashboard = ({ user }) => {
                     Analiza takmičenja
                   </li>
                 </ul>
+                <div className="mt-4">
+                  <Link
+                    to="/sudija-dashboard"
+                    className="bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+                  >
+                    🎯 Sudijski Dashboard
+                  </Link>
+                </div>
               </div>
 
               <div className="bg-white rounded-lg shadow-lg p-6 border-l-4 border-yellow-500">
-                <h3 className="text-2xl font-bold text-gray-800 mb-4">📊 Statistika</h3>
-                <div className="space-y-2">
-                  <p className="text-gray-600">Ocenjeni nastupi: <span className="font-bold text-yellow-600">0</span></p>
-                  <p className="text-gray-600">Takmičenja: <span className="font-bold text-yellow-600">0</span></p>
-                </div>
+                {/* Statistika section removed */}
               </div>
             </div>
           </div>
@@ -91,6 +96,14 @@ const Dashboard = ({ user }) => {
                   <div className="space-y-2">
                     <p className="text-gray-600">Registrovan: <span className="font-bold text-green-600">✓</span></p>
                     <p className="text-gray-600">Spreman za takmičenje: <span className="font-bold text-yellow-600">⏳</span></p>
+                  </div>
+                  <div className="mt-4">
+                    <Link
+                      to="/ucesnik-status"
+                      className="bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded-lg transition"
+                    >
+                      📈 Status nastupa
+                    </Link>
                   </div>
                 </div>
               </div>

@@ -97,8 +97,47 @@ class UcesnikViewSet(viewsets.ModelViewSet):
     serializer_class = UcesnikSerializer
     permission_classes = [AllowAny]
     
+    def create(self, request, *args, **kwargs):
+        """Custom create method to handle OneToOneField with primary key."""
+        from rest_framework.response import Response
+        from rest_framework import status
+        
+        try:
+            # Extract korisnik ID from request data
+            korisnik_id = request.data.get('idk')
+            if not korisnik_id:
+                return Response(
+                    {"error": "idk (korisnik ID) is required"}, 
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
+            korisnik = Korisnik.objects.get(pk=korisnik_id)
+            
+            # Create ucesnik with the korisnik as primary key
+            ucesnik_data = request.data.copy()
+            ucesnik_data['idk'] = korisnik.idk
+            
+            ucesnik = Ucesnik.objects.create(**ucesnik_data)
+            
+            serializer = self.get_serializer(ucesnik)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+            
+        except Korisnik.DoesNotExist:
+            return Response(
+                {"error": "Korisnik with given ID does not exist"}, 
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {"error": str(e)}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+    
     def update(self, request, pk=None):
         """Custom update method to handle OneToOneField with primary key."""
+        from rest_framework.response import Response
+        from rest_framework import status
+        
         try:
             korisnik = Korisnik.objects.get(pk=pk)
             
@@ -121,6 +160,11 @@ class UcesnikViewSet(viewsets.ModelViewSet):
             return Response(
                 {'error': 'Korisnik nije pronađen'}, 
                 status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response(
+                {'error': f'Greška pri kreiranju učesnika: {str(e)}'}, 
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
             )
 
 
@@ -248,7 +292,7 @@ class NastupViewSet(viewsets.ModelViewSet):
     permission_classes = [AllowAny]
     
     def get_queryset(self):
-        queryset = Nastup.objects.all()
+        queryset = Nastup.objects.select_related('drzava', 'pesma', 'takmickarski_krug').prefetch_related('ocene')
         takmickarski_krug_id = self.request.query_params.get('takmickarski_krug_id')
         drzava_id = self.request.query_params.get('drzava_id')
         

@@ -79,6 +79,13 @@ const OrganizatorDashboard = ({ user }) => {
       icon: '🏆',
       path: '/organizator/dodeljivanje-nagrada',
       color: 'bg-yellow-500'
+    },
+    {
+      title: 'Auto raspored nastupa',
+      description: 'Automatski generiši optimalni redosled nastupa',
+      icon: '🎯',
+      path: '/auto-generate-schedule',
+      color: 'bg-emerald-500'
     }
   ];
 
@@ -120,28 +127,7 @@ const OrganizatorDashboard = ({ user }) => {
         ))}
       </div>
 
-      {/* Quick Stats */}
-      <div className="bg-white rounded-lg shadow-lg p-6">
-        <h3 className="text-2xl font-bold text-gray-800 mb-4">📊 Brz pregled</h3>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-2xl font-bold text-blue-600">0</div>
-            <div className="text-sm text-gray-600">Takmičenja</div>
-          </div>
-          <div className="text-center p-4 bg-green-50 rounded-lg">
-            <div className="text-2xl font-bold text-green-600">0</div>
-            <div className="text-sm text-gray-600">Učesnika</div>
-          </div>
-          <div className="text-center p-4 bg-purple-50 rounded-lg">
-            <div className="text-2xl font-bold text-purple-600">0</div>
-            <div className="text-sm text-gray-600">Sudija</div>
-          </div>
-          <div className="text-center p-4 bg-orange-50 rounded-lg">
-            <div className="text-2xl font-bold text-orange-600">0</div>
-            <div className="text-sm text-gray-600">Dvorana</div>
-          </div>
-        </div>
-      </div>
+      {/* Quick Stats - REMOVED */}
     </div>
   );
 };

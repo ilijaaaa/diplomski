@@ -472,6 +472,16 @@ class Nastup(models.Model):
         verbose_name = 'Nastup'
         verbose_name_plural = 'Nastupi'
 
+    def calculate_total_score(self):
+        """Calculate total score from all judges' ratings."""
+        total = sum(ocena.bod for ocena in self.ocene.all())
+        return total
+
+    def update_total_score(self):
+        """Update ukbod field with calculated total score."""
+        self.ukbod = self.calculate_total_score()
+        self.save(update_fields=['ukbod'])
+
     def __str__(self):
         return f"Nastup {self.idn} - {self.pesma}"
 
